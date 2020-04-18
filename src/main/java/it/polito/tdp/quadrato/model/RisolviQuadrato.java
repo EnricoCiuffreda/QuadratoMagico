@@ -7,7 +7,49 @@ public class RisolviQuadrato {
 	private int N ; // lato del quadrato
 	private int N2 ; // numero di caselle (N^2)
 	private int magica ; // costante magica
+	private List<List<Integer>> soluzioni;
 	
+	public RisolviQuadrato(int n) {
+		this.N=n;
+		this.N2=n*n;
+		this.magica=n*(N2+1)/2;
+	}
+	
+	//calcola tutti i quadrati magici
+	public List<List<Integer>> quadrati() {
+		this.soluzioni=new ArrayList<>();
+		List<Integer> parziale=new ArrayList<>();
+		int livello=0;
+		cerca(parziale,livello);
+		return this.soluzioni;
+	
+		
+	}
+	//procedura ricorsiva(privata)
+	private void cerca(List <Integer> parziale,int livello) {
+		if(livello%N==0 && livello!=0) {
+			if(controllaRiga(parziale,livello/N-1)==false)
+				return;
+		}
+		if(livello==N2) {
+			//caso terminale
+			if(controlla(parziale)) {
+				//è magico
+				this.soluzioni.add(new ArrayList<>(parziale));
+			}
+			return;
+		}
+		//caso intermedio 
+		for(int valore=1;valore<=N2;valore++) {
+			if(!parziale.contains(valore)) {
+				//prova 'valore'
+				parziale.add(valore);
+				cerca(parziale,livello+1);
+				parziale.remove(parziale.size()-1);
+			}
+		}
+		
+	}
 	
 	/**
 	 * Verifica se una soluzione rispetta tutte le somme
@@ -55,5 +97,13 @@ public class RisolviQuadrato {
 			return false ;
 
 		return true ;
+	}
+	
+	
+	private boolean controllaRiga(List <Integer> parziale,int riga) {
+		int somma=0;
+		for(int col=0;col<N;col++)
+			somma+=parziale.get(riga*N+col);
+		return(somma==magica);
 	}
 }
